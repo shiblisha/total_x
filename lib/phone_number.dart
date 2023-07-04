@@ -17,72 +17,85 @@ class _Signup_numberState extends State<Signup_number> {
   Widget build(BuildContext context) {
     var mheight = MediaQuery.of(context).size.height;
     var mwidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-        body: SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(top: 80),
-        child: Column(children: [
-          Container(
-            height: mheight * .05,
-            width: mwidth * .99,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.grey,
+    return Scaffold(resizeToAvoidBottomInset: false,
+        body: Padding(
+          padding: EdgeInsets.only(top: 80),
+          child: Column(children: [
+            Center(
+              child: CircleAvatar(
+                radius: 40,
+                foregroundImage: AssetImage('assets/company icons.jpg'),
+              ),
             ),
-            child: TextFormField(controller: phone,
-              decoration: InputDecoration(
-                  focusedBorder: InputBorder.none,
-                  disabledBorder: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  icon: Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: Icon(
-                      Icons.phone_android,
-                      color: Colors.black,
-                    ),
+            SizedBox(
+              height: mheight*0.2,
+            ),
+            Padding(
+                padding: EdgeInsets.only(left: mwidth * 0.08),
+                child: Container(
+                  height: mheight * 0.08,
+                  width: mwidth * 0.80,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(),
                   ),
-                  hintText: 'Phone number',
-                  hintStyle:
-                      TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
+                  child: Row(
+                      children: [
+                        Container(
+                            height: mheight * 0.05,
+                            width: mwidth * 0.60,
+                            child: Padding(
+                                padding: EdgeInsets.only(left: mwidth * 0.02),
+                                child: TextFormField(controller: phone,
+                                  decoration: InputDecoration(
+                                      enabledBorder: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      focusedErrorBorder: InputBorder.none,
+                                      hintText: 'Enter Phone Number',
+                                      hintStyle: TextStyle(color: Color(0xff90A4AE))),
+                                )
+                            )
+                        )
+                      ]),
+                )
             ),
-          ),
-          SizedBox(
-            height: mheight * .03,
-          ),
-          SizedBox(
-            width: mwidth * .3,
-          ),
-          Container(
-              height: mheight * .05,
+            SizedBox(
+              height: mheight * .03,
+            ),
+            SizedBox(
               width: mwidth * .3,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20), color: Colors.grey),
-              child: TextButton(
-                  child: Text(
-                    'Get otp',
+            ),
+            Container(
+                height: mheight * .05,
+                width: mwidth * .3,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8), color: Colors.red),
+                child: TextButton(
+                    child: Text(
+                      'Get otp',
 
-                    style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                  ),
-                  onPressed: (){
-                    auth.verifyPhoneNumber(phoneNumber: phone.text,verificationCompleted: (_){},
-                        verificationFailed: (e){
-                          ToastMessage().toastmessage(message: e.toString());
-                        },
-                        codeSent: (String verificationId,int? token){
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (ctx) => Otp_form(verificationId: verificationId,)));
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    onPressed: (){
+                      auth.verifyPhoneNumber(phoneNumber: phone.text,verificationCompleted: (_){},
+                          verificationFailed: (e){
+                            ToastMessage().toastmessage(message: e.toString());
+                          },
+                          codeSent: (String verificationId,int? token){
+                            Navigator.of(context).push(
+                                MaterialPageRoute(builder: (ctx) => Otp_form(verificationId: verificationId,)));
 
 
-                        },
-                        codeAutoRetrievalTimeout: (e){
-                          ToastMessage().toastmessage(message: e.toString());
-                        });
-                  })),
-        ]),
-      ),
-    ));
+                          },
+                          codeAutoRetrievalTimeout: (e){
+                            ToastMessage().toastmessage(message: e.toString());
+                          });
+                    })),
+          ]),
+        ));
   }
 }

@@ -23,74 +23,124 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     var mheight = MediaQuery.of(context).size.height;
     var mwidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-        body: SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(top: mheight * .05),
-        child: Column(
-          children: [
-            Container(
-                height: mheight * .05,
-                width: mwidth * .98,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.grey,
+    return Scaffold(resizeToAvoidBottomInset: false,
+        body: Padding(
+          padding: EdgeInsets.only(top: mheight * .03),
+          child: Column(
+            children: [
+              SizedBox(
+                  height: mheight*0.1
+              ),
+              Center(
+                child: CircleAvatar(
+                  radius: 40,
+                  foregroundImage: AssetImage('assets/company icons.jpg'),
                 ),
-                child: TextFormField(
-                  controller: email,
-                  decoration: InputDecoration(
-                      focusedBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      icon: Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: Icon(
-                          Icons.email_rounded,
-                          color: Colors.black,
-                        ),
+              ),
+              SizedBox(
+                height: mheight*0.08,
+              ),
+              Text("Hello GUYS,",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24,color: Colors.red),),
+              SizedBox(
+                height: mheight*0.08,
+              ),
+              Padding(
+                padding:  EdgeInsets.only(left: mwidth*0.04),
+                child: Card(
+                    child: Container(
+                      height: mheight*0.05,
+                      width: mwidth*0.80,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10)
                       ),
-                      hintText: 'Email',
-                      hintStyle:
-                          TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-                )),
-            SizedBox(
-              height: mheight * .05,
-            ),
-            Container(
-                height: mheight * .05,
-                width: mwidth * .98,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.grey,
+                      child:Row(
+                          children: [
+                            Container(
+                              height: mheight*0.05,
+                              width: mwidth*0.60,
+                              child: Padding(
+                                padding:  EdgeInsets.only(left: mwidth*0.02),
+                                child: TextFormField(controller: email,
+                                  decoration: InputDecoration(
+                                      enabledBorder: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      focusedErrorBorder: InputBorder.none,
+                                      hintText: 'Enter Your Email Adderss',
+                                      hintStyle: TextStyle(color: Color(0xff90A4AE))
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ]
+                      ),
+                    )
                 ),
-                child: TextFormField(
-                  controller: password,
-                  decoration: InputDecoration(
-                      focusedBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      icon: Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: Icon(
-                          Icons.key,
-                          color: Colors.black,
-                        ),
+              ),
+              SizedBox(
+                height: mheight * .05,
+              ),
+              Padding(
+                padding:  EdgeInsets.only(left: mwidth*0.04),
+                child: Card(
+                    child: Container(
+                      height: mheight*0.05,
+                      width: mwidth*0.80,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10)
                       ),
-                      hintText: 'Password',
-                      hintStyle:
-                          TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
-                )),
-            SizedBox(
-              height: mheight * .05,
-            ),
-            Row(
-              children: [
-                Container(
+                      child:Row(
+                          children: [
+                            Container(
+                              height: mheight*0.05,
+                              width: mwidth*0.60,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: mwidth*0.02),
+                                child: TextFormField(controller: password,
+                                  decoration: InputDecoration(
+                                      enabledBorder: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      focusedErrorBorder: InputBorder.none,
+                                      hintText: 'Enter Your password',
+                                      hintStyle: TextStyle(color: Color(0xff90A4AE))
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ]
+                      ),
+                    )
+                ),
+              ),
+              SizedBox(
+                height: mheight*0.01,
+                width: mwidth*0.3,
+              ),
+              Padding(
+                padding:  EdgeInsets.only(left: mwidth*0.35),
+                child: TextButton(
+                    child: Text(
+                      'Forgott password',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red),
+                    ),
+                    onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (ctx) =>Forgot_password()))),
+              ),
+              SizedBox(
+                height: mheight * .05,
+              ),
+              Center(
+                child: Container(
                   height: mheight * .05,
                   width: mwidth * .3,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey),
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.red),
                   child: TextButton(
                     onPressed: () {
                       auth
@@ -113,35 +163,10 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
+              ),
 
-                SizedBox(
-                  width: 30,
-                ),
-                SizedBox(
-                  width: mwidth * .3,
-                ),
-                Container(
-                    height: mheight * .05,
-                    width: mwidth * .3,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.grey),
-                    child: TextButton(
-                        child: Text(
-                          'Forgott password',
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                        ),
-                        onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (ctx) =>Forgot_password())))),
-              ],
-            ),
-          ],
-        ),
-      ),
-    ));
+            ],
+          ),
+        ));
   }
 }
