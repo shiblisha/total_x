@@ -20,15 +20,15 @@ class _Signup_numberState extends State<Signup_number> {
     return Scaffold(resizeToAvoidBottomInset: false,
         body: Padding(
           padding: EdgeInsets.only(top: 80),
-          child: Column(children: [
-            Center(
-              child: CircleAvatar(
-                radius: 40,
-                foregroundImage: AssetImage('assets/company icons.jpg'),
-              ),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+            Padding(
+              padding:  EdgeInsets.only(left: mwidth*0.05),
+              child: Text("Enter Your\nMobile Number",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 25,color: Color(0xff004B59)),),
             ),
             SizedBox(
-              height: mheight*0.2,
+              height: mheight*0.1,
             ),
             Padding(
                 padding: EdgeInsets.only(left: mwidth * 0.08),
@@ -66,35 +66,37 @@ class _Signup_numberState extends State<Signup_number> {
             SizedBox(
               width: mwidth * .3,
             ),
-            Container(
-                height: mheight * .05,
-                width: mwidth * .3,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8), color: Colors.red),
-                child: TextButton(
-                    child: Text(
-                      'Get otp',
+            Center(
+              child: Container(
+                  height: mheight * .05,
+                  width: mwidth * .7,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8), color:Color(0xff004B59)),
+                  child: TextButton(
+                      child: Text(
+                        'Get otp',
 
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                    onPressed: (){
-                      auth.verifyPhoneNumber(phoneNumber: phone.text,verificationCompleted: (_){},
-                          verificationFailed: (e){
-                            ToastMessage().toastmessage(message: e.toString());
-                          },
-                          codeSent: (String verificationId,int? token){
-                            Navigator.of(context).push(
-                                MaterialPageRoute(builder: (ctx) => Otp_form(verificationId: verificationId,)));
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                      onPressed: (){
+                        auth.verifyPhoneNumber(phoneNumber: phone.text,verificationCompleted: (_){},
+                            verificationFailed: (e){
+                              ToastMessage().toastmessage(message: e.toString());
+                            },
+                            codeSent: (String verificationId,int? token){
+                              Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (ctx) => Otp_form(verificationId: verificationId,)));
 
 
-                          },
-                          codeAutoRetrievalTimeout: (e){
-                            ToastMessage().toastmessage(message: e.toString());
-                          });
-                    })),
+                            },
+                            codeAutoRetrievalTimeout: (e){
+                              ToastMessage().toastmessage(message: e.toString());
+                            });
+                      })),
+            ),
           ]),
         ));
   }

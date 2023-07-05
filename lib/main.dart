@@ -1,8 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_project/sign_up.dart';
+import 'package:firebase_project/LoginPage.dart';
 import 'package:flutter/material.dart';
 
-import 'home.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +31,6 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: Sign_up()
+      home: LoginPage()
     );
   }}

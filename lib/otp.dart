@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_project/home.dart';
 import 'package:firebase_project/toastmessege.dart';
-import 'package:firebase_project/upload_image.dart';
 import 'package:flutter/material.dart';
 
-import 'firestore.dart';
+
 
 class Otp_form extends StatefulWidget {
   final verificationId;
@@ -37,7 +37,7 @@ class _Otp_formState extends State<Otp_form> {
                   children: [
                     Container(
                         height: mheight * 0.05,
-                        width: mwidth * 0.60,
+                        width: mwidth * 0.7,
                         child: Padding(
                           padding: EdgeInsets.only(left: mwidth * 0.02),
                           child: TextFormField(
@@ -76,7 +76,7 @@ class _Otp_formState extends State<Otp_form> {
                     smsCode: otp.text);
                 try{
                   await auth.signInWithCredential(credentials);
-                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext a)=>Upload_image()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext a)=>Home()));
                 }catch(e){
                   ToastMessage().toastmessage(message: e.toString());
                 }

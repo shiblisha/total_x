@@ -1,24 +1,78 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_project/forgot_password.dart';
+import 'package:firebase_project/phone_number.dart';
 import 'package:firebase_project/toastmessege.dart';
-import 'package:firebase_project/upload_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-import 'firestore.dart';
+import 'LoginPage.dart';
 import 'home.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+class Sign_up extends StatefulWidget {
+  const Sign_up({Key? key}) : super(key: key);
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Sign_up> createState() => _Sign_upState();
 }
 
 TextEditingController email = TextEditingController();
 TextEditingController password = TextEditingController();
 FirebaseAuth auth = FirebaseAuth.instance;
+bool isLoading = false;
 
-class _LoginState extends State<Login> {
+class _Sign_upState extends State<Sign_up> {
+  Future<UserCredential?> _signInWithGoogle() async {
+    try {
+      await InternetAddress.lookup('google.com');
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+      await googleUser?.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      // Once signed in, return the UserCredential
+      return await auth.signInWithCredential(credential);
+    } catch (e) {
+      //show error toast message here
+      log('\n_signInWithGoogle: $e');
+      return null;
+    }
+  }
+
+  Future<User?> createAccount(
+     String email, String password) async {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+
+
+
+    try {
+      UserCredential userCrendetial = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      ToastMessage().toastmessage(message: 'Successfully Registered');
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => const Home()),
+      );
+
+    } catch (error) {
+      ToastMessage().toastmessage(message: error.toString());
+    } finally {
+      setState(() {
+        isLoading = false; // Hide progress indicator
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var mheight = MediaQuery.of(context).size.height;
@@ -27,26 +81,20 @@ class _LoginState extends State<Login> {
         body: Padding(
           padding: EdgeInsets.only(top: mheight * .03),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                  height: mheight*0.1
-              ),
-              Center(
-                child: CircleAvatar(
-                  radius: 40,
-                  foregroundImage: AssetImage('assets/company icons.jpg'),
-                ),
-              ),
-              SizedBox(
-                height: mheight*0.08,
-              ),
-              Text("Hello GUYS,",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24,color: Colors.red),),
-              SizedBox(
-                height: mheight*0.08,
+                  height: mheight*0.05
               ),
               Padding(
-                padding:  EdgeInsets.only(left: mwidth*0.04),
-                child: Card(
+                padding:  EdgeInsets.only(left: mwidth*0.05),
+                child: Text("Signup to\nGet Started ",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24,color: Color(0xff004B59)),),
+              ),
+              SizedBox(
+                height: mheight*0.08,
+              ),
+              Center(
+                child: Card(elevation: 2,
                     child: Container(
                       height: mheight*0.05,
                       width: mwidth*0.80,
@@ -66,7 +114,7 @@ class _LoginState extends State<Login> {
                                       focusedBorder: InputBorder.none,
                                       errorBorder: InputBorder.none,
                                       focusedErrorBorder: InputBorder.none,
-                                      hintText: 'Enter Your Email Adderss',
+                                      hintText: 'Email ',
                                       hintStyle: TextStyle(color: Color(0xff90A4AE))
                                   ),
                                 ),
@@ -78,11 +126,10 @@ class _LoginState extends State<Login> {
                 ),
               ),
               SizedBox(
-                height: mheight * .05,
+                height: mheight * 0.02,
               ),
-              Padding(
-                padding:  EdgeInsets.only(left: mwidth*0.04),
-                child: Card(
+              Center(
+                child: Card(elevation: 2,
                     child: Container(
                       height: mheight*0.05,
                       width: mwidth*0.80,
@@ -102,7 +149,7 @@ class _LoginState extends State<Login> {
                                       focusedBorder: InputBorder.none,
                                       errorBorder: InputBorder.none,
                                       focusedErrorBorder: InputBorder.none,
-                                      hintText: 'Enter Your password',
+                                      hintText: 'Password',
                                       hintStyle: TextStyle(color: Color(0xff90A4AE))
                                   ),
                                 ),
@@ -113,58 +160,80 @@ class _LoginState extends State<Login> {
                     )
                 ),
               ),
-              SizedBox(
-                height: mheight*0.01,
-                width: mwidth*0.3,
-              ),
-              Padding(
-                padding:  EdgeInsets.only(left: mwidth*0.35),
-                child: TextButton(
-                    child: Text(
-                      'Forgott password',
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red),
-                    ),
-                    onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (ctx) =>Forgot_password()))),
-              ),
+
+
               SizedBox(
                 height: mheight * .05,
               ),
               Center(
                 child: Container(
                   height: mheight * .05,
-                  width: mwidth * .3,
+                  width: mwidth * 0.7,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: Colors.red),
+                      color: Color(0xff004B59)),
                   child: TextButton(
                     onPressed: () {
-                      auth
-                          .signInWithEmailAndPassword(
-                              email: email.text, password: password.text)
-                          .then((value) => {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext a) => Upload_image())),
-                                ToastMessage().toastmessage(message: 'welcome')
-                              })
-                          .onError((error, stackTrace) => ToastMessage()
-                              .toastmessage(message: error.toString()));
+                      createAccount(email.text, password.text);
                     },
                     child: Text(
-                      'Login',
+                      'Sign Up',
                       style: TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontSize: 15,
                           fontWeight: FontWeight.w900),
                     ),
                   ),
                 ),
               ),
+              Padding(
+                padding:  EdgeInsets.only(left: mwidth*0.25),
+                child: Row(children: [
+                  Text(
+                    "Already have an account",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 15,
+                        color: Colors.grey),
+                  ),
+                  TextButton(onPressed: (){ Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => LoginPage()));}, child:  Text(" Sign in" ,style: TextStyle( fontSize: 18,fontWeight: FontWeight.w600,color: Color(0xff004B59)),))
+                ]),
+              ),
+              SizedBox(height: mheight*0.05,),
+              Center(
+                child: SizedBox(
+                    width :mwidth*0.8,
+                    child: Divider(height: mheight*0.05,thickness: 2,)),
+              ),
+              SizedBox(height: mheight*0.04,),
+              Row(crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(width: mwidth*0.2,),
+                  GestureDetector(onTap: (){_signInWithGoogle() .then((value) {
 
+
+                    print(value);
+                    Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (ctx) => Home()));})
+                      .onError((error, stackTrace) => ToastMessage()
+                      .toastmessage(message: error.toString()));},
+                    child: SizedBox(
+                        height: mheight*0.05,width: mwidth*0.2,
+                        child: Image.asset("assets/google.png")),
+                  ),
+                  Padding(
+                    padding:  EdgeInsets.only(top: mheight*0.01,left: mwidth*0.1),
+                    child: GestureDetector(onTap: (){ Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => Signup_number()));},
+                      child: SizedBox(
+                          height: mheight*0.04,width: mwidth*0.2,
+                          child: Image.asset("assets/mobile.png")),
+                    ),
+                  ),
+
+                ],)
             ],
           ),
         ));
