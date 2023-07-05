@@ -114,7 +114,7 @@ class _HomeState extends State<Home> {
                         _image!.absolute,fit: BoxFit.cover,
                       ),
                           )
-                          : ClipRRect(borderRadius: BorderRadius.circular(100),child: Image.asset('assets/add image.png',width: mwidth*0.2,)),)
+                          : ClipRRect(borderRadius: BorderRadius.circular(100),child: Image.asset('assets/add image.png',width: mwidth*0.1,height: mheight*0.02,)),)
 
                     ),
                     Positioned(height: mheight*0.3,width: mwidth*1.1,
