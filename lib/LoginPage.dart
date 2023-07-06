@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import 'Login.dart';
+import 'signup.dart';
 
 class LoginPage extends StatefulWidget {
 
@@ -46,7 +46,10 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       // Once signed in, return the UserCredential
-      return await auth.signInWithCredential(credential);
+      return await auth.signInWithCredential(credential).then((value) =>   Navigator.of(context).push(
+          MaterialPageRoute(
+              builder: (ctx) => Home()))).onError((error, stackTrace) => ToastMessage()
+          .toastmessage(message: error.toString()));
     } catch (e) {
       //show error toast message here
       log('\n_signInWithGoogle: $e');
@@ -267,15 +270,7 @@ class _LoginPageState extends State<LoginPage> {
               Row(crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                  SizedBox(width: mwidth*0.2,),
-                GestureDetector(onTap: (){_signInWithGoogle() .then((value) {
-
-
-                  print(value);
-                  Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (ctx) => Home()));})
-                    .onError((error, stackTrace) => ToastMessage()
-                    .toastmessage(message: error.toString()));},
+                GestureDetector(onTap: (){_signInWithGoogle();},
                   child: SizedBox(
                     height: mheight*0.05,width: mwidth*0.2,
                       child: Image.asset("assets/google.png")),
@@ -283,7 +278,7 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding:  EdgeInsets.only(top: mheight*0.01,left: mwidth*0.1),
                   child: GestureDetector(onTap: (){ Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => Signup_number()));},
+                      builder: (ctx) => Phonelogin()));},
                     child: SizedBox(
                     height: mheight*0.04,width: mwidth*0.2,
                         child: Image.asset("assets/mobile.png")),

@@ -47,7 +47,10 @@ class _Sign_upState extends State<Sign_up> {
       );
 
       // Once signed in, return the UserCredential
-      return await auth.signInWithCredential(credential);
+      return await auth.signInWithCredential(credential).then((value) =>   Navigator.of(context).push(
+          MaterialPageRoute(
+              builder: (ctx) => Home()))).onError((error, stackTrace) => ToastMessage()
+          .toastmessage(message: error.toString()));
     } catch (e) {
       //show error toast message here
       log('\n_signInWithGoogle: $e');
@@ -59,7 +62,7 @@ class _Sign_upState extends State<Sign_up> {
      String email, String password) async {
     FirebaseAuth _auth = FirebaseAuth.instance;
     try {
-      UserCredential userCrendetial = await _auth
+    await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
 
       ToastMessage().toastmessage(message: 'Successfully Registered');
@@ -266,15 +269,7 @@ class _Sign_upState extends State<Sign_up> {
               Row(crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(width: mwidth*0.2,),
-                  GestureDetector(onTap: (){_signInWithGoogle() .then((value) {
-
-
-                    print(value);
-                    Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (ctx) => Home()));})
-                      .onError((error, stackTrace) => ToastMessage()
-                      .toastmessage(message: error.toString()));},
+                  GestureDetector(onTap: (){_signInWithGoogle();},
                     child: SizedBox(
                         height: mheight*0.05,width: mwidth*0.2,
                         child: Image.asset("assets/google.png")),
@@ -282,7 +277,7 @@ class _Sign_upState extends State<Sign_up> {
                   Padding(
                     padding:  EdgeInsets.only(top: mheight*0.01,left: mwidth*0.1),
                     child: GestureDetector(onTap: (){ Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) => Signup_number()));},
+                        builder: (ctx) => Phonelogin()));},
                       child: SizedBox(
                           height: mheight*0.04,width: mwidth*0.2,
                           child: Image.asset("assets/mobile.png")),
