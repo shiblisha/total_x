@@ -6,6 +6,7 @@ import 'package:firebase_project/home.dart';
 import 'package:firebase_project/phone_number.dart';
 import 'package:firebase_project/toastmessege.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'Login.dart';
@@ -21,7 +22,12 @@ class LoginPage extends StatefulWidget {
 FirebaseAuth auth = FirebaseAuth.instance;
 TextEditingController email = TextEditingController();
 TextEditingController password = TextEditingController();
-
+String pattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+    r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+    r"{0,253}[a-zA-Z0-9])?)*$";
+String loginpage_email1 = '';
+String loginpage_password1 = '';
+bool passwordvisible = false;
 class _LoginPageState extends State<LoginPage> {
   Future<UserCredential?> _signInWithGoogle() async {
     try {
@@ -50,8 +56,11 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    RegExp regex = RegExp(pattern);
     var mheight = MediaQuery.of(context).size.height;
     var mwidth = MediaQuery.of(context).size.width;
+    var size = MediaQuery.of(context).size;
+
     return Scaffold(resizeToAvoidBottomInset: false,
       body: Padding(
         padding: EdgeInsets.only(top: 80),
@@ -89,6 +98,26 @@ class _LoginPageState extends State<LoginPage> {
                         padding: EdgeInsets.only(left: mwidth * 0.02),
                         child: TextFormField(
                           controller: email,
+                          onSaved: (value) {
+                            loginpage_email1 = value!;
+                            loginpage_email1 = value!.trim();
+                            value.replaceAll(RegExp(r'\s+'), '');
+                          },onChanged: (value) {
+
+                          email.value = TextEditingValue(
+                            text: value.trim(),
+                            selection:  email.selection,
+                          );
+                        },
+
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                !regex.hasMatch(value)) {
+                              return 'Invalid email';
+                            }
+                            return null;
+                          },
                           decoration: InputDecoration(
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
@@ -96,6 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                               focusedErrorBorder: InputBorder.none,
                               hintText: 'Email',
                               hintStyle: TextStyle(color: Color(0xff90A4AE))),
+
                         ),
                       ),
                     ),
@@ -115,12 +145,43 @@ class _LoginPageState extends State<LoginPage> {
                   child: Row(children: [
                     Container(
                       height: mheight * 0.05,
-                      width: mwidth * 0.60,
+                      width: mwidth * 0.8,
                       child: Padding(
                         padding: EdgeInsets.only(left: mwidth * 0.02),
                         child: TextFormField(
                           controller: password,
+                          obscureText: passwordvisible ? false : true,
+
+                          validator: (value) {
+                            if (value == null ||
+                                value.length < 6 ||
+                                value.isEmpty) {
+                              return 'Password should be atleast 6 character';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            loginpage_password1 = value!;
+                          },
                           decoration: InputDecoration(
+                            suffix: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    passwordvisible = !passwordvisible;
+                                  });
+                                },
+                                icon: passwordvisible
+                                    ? Icon(
+                                  Icons.remove_red_eye,
+                                  color: Color(0xff95BDC6),
+                                  size: size.width*0.04,
+                                )
+                                    : Icon(
+                                  FontAwesomeIcons.eyeSlash,
+                                  color: Color(0xff95BDC6),
+                                  size: 14,
+                                )),
+
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
                               errorBorder: InputBorder.none,
@@ -130,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                  ]),
+                    ]),
                 )),
               ),
               SizedBox(
@@ -158,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: TextButton(
                     onPressed: () {
                       auth
-                          .createUserWithEmailAndPassword(
+                          .signInWithEmailAndPassword(
                               email: email.text, password: password.text)
                           .then((value) => {
                                 Navigator.of(context).push(MaterialPageRoute(

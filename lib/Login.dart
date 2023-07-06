@@ -2,10 +2,10 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_project/forgot_password.dart';
 import 'package:firebase_project/phone_number.dart';
 import 'package:firebase_project/toastmessege.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'LoginPage.dart';
@@ -22,6 +22,12 @@ TextEditingController email = TextEditingController();
 TextEditingController password = TextEditingController();
 FirebaseAuth auth = FirebaseAuth.instance;
 bool isLoading = false;
+String pattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+    r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+    r"{0,253}[a-zA-Z0-9])?)*$";
+String loginpage_email1 = '';
+String loginpage_password1 = '';
+bool passwordvisible = false;
 
 class _Sign_upState extends State<Sign_up> {
   Future<UserCredential?> _signInWithGoogle() async {
@@ -52,9 +58,6 @@ class _Sign_upState extends State<Sign_up> {
   Future<User?> createAccount(
      String email, String password) async {
     FirebaseAuth _auth = FirebaseAuth.instance;
-
-
-
     try {
       UserCredential userCrendetial = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -75,6 +78,8 @@ class _Sign_upState extends State<Sign_up> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    RegExp regex = RegExp(pattern);
     var mheight = MediaQuery.of(context).size.height;
     var mwidth = MediaQuery.of(context).size.width;
     return Scaffold(resizeToAvoidBottomInset: false,
@@ -109,6 +114,26 @@ class _Sign_upState extends State<Sign_up> {
                               child: Padding(
                                 padding:  EdgeInsets.only(left: mwidth*0.02),
                                 child: TextFormField(controller: email,
+                                    onSaved: (value) {
+                              loginpage_email1 = value!;
+                              loginpage_email1 = value!.trim();
+                              value.replaceAll(RegExp(r'\s+'), '');
+                              },onChanged: (value) {
+
+                                email.value = TextEditingValue(
+                                  text: value.trim(),
+                                  selection:  email.selection,
+                                );
+                              },
+
+                                  validator: (value) {
+                                    if (value == null ||
+                                        value.isEmpty ||
+                                        !regex.hasMatch(value)) {
+                                      return 'Invalid email';
+                                    }
+                                    return null;
+                                  },
                                   decoration: InputDecoration(
                                       enabledBorder: InputBorder.none,
                                       focusedBorder: InputBorder.none,
@@ -140,11 +165,42 @@ class _Sign_upState extends State<Sign_up> {
                           children: [
                             Container(
                               height: mheight*0.05,
-                              width: mwidth*0.60,
+                              width: mwidth*0.8,
                               child: Padding(
                                 padding: EdgeInsets.only(left: mwidth*0.02),
                                 child: TextFormField(controller: password,
+                                  obscureText: passwordvisible ? false : true,
+
+                                  validator: (value) {
+                                    if (value == null ||
+                                        value.length < 6 ||
+                                        value.isEmpty) {
+                                      return 'Password should be atleast 6 character';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    loginpage_password1 = value!;
+                                  },
                                   decoration: InputDecoration(
+                                    suffix: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            passwordvisible = !passwordvisible;
+                                          });
+                                        },
+                                        icon: passwordvisible
+                                            ? Icon(
+                                          Icons.remove_red_eye,
+                                          color: Color(0xff95BDC6),
+                                          size: size.width*0.04,
+                                        )
+                                            : Icon(
+                                          FontAwesomeIcons.eyeSlash,
+                                          color: Color(0xff95BDC6),
+                                          size: 14,
+                                        )),
+
                                       enabledBorder: InputBorder.none,
                                       focusedBorder: InputBorder.none,
                                       errorBorder: InputBorder.none,
